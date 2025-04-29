@@ -9,29 +9,29 @@ import History from './components/History';
 import Leaderboard from './components/Leaderboard';
 import './App.css';
 
-// dit is een component voor beschermde routes die authenticatie vereisen
+// Protected route for things tat require auth.
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-
+// logs if the user is authenticated or not.
   console.log(`[PrivateRoute] Rendering: loading=${loading}, isAuthenticated=${isAuthenticated}`);
 
-  // toon niets tijdens het laden
+  // Shows nothing while loading, PrivateRoute is the protected route on line 12.
   if (loading) {
     console.log('[PrivateRoute] Auth check in progress, showing loading...');
     return null;
   }
 
-  // redirect naar login als de gebruiker niet is ingelogd
+  // Sends the user to login before they can start a typetest.
   if (!isAuthenticated) {
     console.log('[PrivateRoute] Not authenticated, redirecting to /login');
     return <Navigate to="/login" replace />;
   }
-
+// Logs if the user is authenticated. 
   console.log('[PrivateRoute] Authenticated, rendering children');
   return <>{children}</>;
 };
 
-// dit is het hoofdcomponent van de applicatie
+// dit is het hoofdcomponent van de applicatie, React.FC is a function component that literally just tells React that this is react.
 const App: React.FC = () => {
   return (
     // wrap de hele app in de AuthProvider voor authenticatie

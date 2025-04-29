@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
-
+// sequelize is a library for connecting to the database
+// database connection
 export const sequelize = new Sequelize({
     dialect: 'mysql',
     host: 'localhost',

@@ -63,6 +63,7 @@ const UserStats: React.FC = () => {
             setError(null);
             
             try {
+                // This will fetch the leaderboard, stats and history from the database.
                 const leaderboardPromise = api.get('/typing/leaderboard');
                 const statsPromise = api.get<UserStatsData>(`/typing/stats/${user.id}`);
                 const historyPromise = api.get<TypingTest[]>(`/typing/history/${user.id}`);
@@ -188,7 +189,7 @@ const UserStats: React.FC = () => {
         return <div className="loading">Loading statistics...</div>;
     }
 
-    
+    // This is the "Show More" button.
     const formatDate = (dateString: string) => {
         try {
             if (!dateString) {
@@ -202,7 +203,7 @@ const UserStats: React.FC = () => {
                 console.error('Invalid date:', dateString);
                 return 'Invalid date';
             }
-            // dit laat de datum zien als dag/maand/jaar 
+            // Shows the date as day/month/year
             return date.toLocaleString('en-GB', {
                 year: 'numeric',
                 month: 'short',
@@ -216,11 +217,11 @@ const UserStats: React.FC = () => {
             return 'Invalid date';
         }
     };
-    // dit is de functie voor het toon meer history
+    // Function for show more history, after 7 tests it will show the button.
     const handleShowMoreHistory = () => {
         setVisibleHistoryCount(prevCount => prevCount + 7);
     };
-// dit laat de user stats zien
+// Shows the user stats.
     return (
         <div className="stats-container">
             <h2>Your Statistics</h2>
@@ -228,14 +229,17 @@ const UserStats: React.FC = () => {
                  <div className="user-stats-combined">
                     <div className="stat-item">
                         <h3>Highest WPM</h3>
+                        {/* If stats.highest_wpm has something in it, (not null/undefined/empty), use the highest wpm from the stats. Otherwise, use 0 as a fallback */}
                         <p className="stat-value">{Number(stats.highest_wpm || 0).toFixed(1)}</p>
                     </div>
                     <div className="stat-item">
                         <h3>Average WPM</h3>
+                        {/* Same thing as above, but for the average wpm. */}
                         <p className="stat-value">{Number(stats.average_wpm || 0).toFixed(1)}</p>
                     </div>
                     <div className="stat-item">
                         <h3>Total Tests</h3>
+                        {/* This will see if any stats.total_tests are available, if not it will just show 0. */}
                         <p className="stat-value">{stats.total_tests || 0}</p>
                     </div>
                 </div>
@@ -245,6 +249,7 @@ const UserStats: React.FC = () => {
 {/* dit is de leaderboard, dit laat zien wat de top 10 hooghste wpm zijn. */}
             <div className="leaderboard-section">
                 <h2>Top 10 Highest WPM</h2>
+                {/* The "0" will see if the leaderboard has any entries. */}
                 <div className="leaderboard-grid">
                     {leaderboard.length > 0 ? (
                         leaderboard.map((entry, index) => ( 
@@ -256,6 +261,8 @@ const UserStats: React.FC = () => {
                                         {entry.username}
                                     </div>
                                     {/* // dit laat de hoogste wpm, gemiddelde wpm en het aantal tests zien bij de kaarten van de gebruikers */}
+
+                                    {/* // toFixed(1) means that the number will be rounded to 1 decimal place. 0.0 means that it starts at 0, and that is how it will show. */}
                                     <div className="leaderboard-stats">
                                         <span>Highest WPM: {Number(entry.highest_wpm)?.toFixed(1) || '0.0'}</span>
                                         <span>Average WPM: {Number(entry.average_wpm)?.toFixed(1) || '0.0'}</span>
@@ -288,7 +295,7 @@ const UserStats: React.FC = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                             {/* Dit laat de "Test History" zien  */}
+                             {/* This will show the "Test History", history.slice(0, visibleHistoryCount).map((test) is used to show the first 7 tests, and then the rest will be shown when the button is clicked. */}
                                 {history.slice(0, visibleHistoryCount).map((test) => (
                                     <tr key={test.id}>
                                         <td>{formatDate(test.created_at)}</td>
@@ -309,7 +316,7 @@ const UserStats: React.FC = () => {
                     </>
                 )}
             </div>
-            {/* dit is de wpm distribution, dit laat zien hoeveel tests er zijn bij een bepaalde wpm */}
+            {/* This is the "WPM Distribution" chart. */}
             
             <div className="wpm-distribution-section">
                 <div className="chart-container" style={{ height: '300px', position: 'relative' }}> 

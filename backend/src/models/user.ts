@@ -1,5 +1,6 @@
 import { db as pool } from '../database';
 
+// user model
 export interface User {
     id: number;
     username: string;
@@ -9,6 +10,8 @@ export interface User {
 }
 
 export class UserModel {
+    // creates a new user in the database
+    // <User | null> means that the function will return a User or nothing if there is an error
     static async createUser(username: string, email: string, password: string): Promise<User | null> {
         try {
             console.log('Creating user in database:', { username, email });
@@ -23,7 +26,8 @@ export class UserModel {
             return null;
         }
     }
-
+    // gets a user by their id
+    // async means that it can finish later incase more needed things have to be done first.
     static async getUserById(id: number): Promise<User | null> {
         try {
             const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [id]);
@@ -40,6 +44,7 @@ export class UserModel {
 
     static async getUserByEmail(email: string): Promise<User | null> {
         try {
+            // gets a user by their email, pool is the database connection
             const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', [email]);
             const user = (rows as User[])[0];
             if (!user) {
@@ -58,10 +63,12 @@ export class UserModel {
                 'SELECT * FROM users WHERE email = ? AND password = ?',
                 [email, password]
             );
+            // (rows as User[]) means that the User row already exists, so we can use it, so that typescript doesn't complain.
             const user = (rows as User[])[0];
             if (!user) {
                 console.log('Invalid credentials for email:', email);
             }
+            // the || means that if the user is not found, return an error using the console.error.
             return user || null;
         } catch (error) {
             console.error('Error in verifyUser:', error);

@@ -25,7 +25,7 @@ interface TypingTestResult {
 }
 
 enum WordStatus { Neutral, Correct, Incorrect }
-// dit houd de typetest bij, het vergelijkt de gebruiker input met de correcte woorden en voegt de kleuren toe.
+// dit houd de typetest bij, het vergelijkt de gebruiker input met de correcte woorden en voegt de kleuren toe. Een const is een variable die niet veranderd.
 const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
     const { user } = useAuth();
     const [words, setWords] = useState<string[]>([]);
@@ -84,6 +84,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
             console.log('Words response:', data);
             // dit maakt een array van de woorden
             let wordsArray;
+            // === checks if the data is a string
             if (typeof data === 'string') {
                 wordsArray = data.split(' ');
             } else if (Array.isArray(data)) {
@@ -209,15 +210,15 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
             }
             setCurrentWordStatus(newStatus);
         }
-
+// isTestActive checks if the test is active, value.Length checks if the user has typed something, value !== ' ' checks if the user has typed something other than a space.
         if (isTestActive || (!isTestActive && value.length > 0 && value !== ' ')) { 
             setLiveWpm(calculateLiveWpm());
         }
-
+// endsWith checks if the user has pressed space, then it will reset the input field and ges the next wor.
         if (value.endsWith(' ') && value.trim().length > 0) {
             const typedWord = value.trim();
             const currentWord = words[currentWordIndex];
-
+// typedWord !== currentWord checks if the user has typed the correct word, if not it will set the input field to the typed word and return.
             if (typedWord !== currentWord) {
                 setCurrentWordStatus(WordStatus.Incorrect);
                 setInput(typedWord);
@@ -229,7 +230,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
                 setCorrectlyCompletedChars((prev: number) => prev + currentWord.length);
                 setCurrentWordStatus(WordStatus.Correct);
             }
-            
+            // Checks if this is the final word, if so it will end the test.
             if (currentWordIndex === words.length - 1) {
                 endTest(typedWord === currentWord);
             } else {
@@ -237,9 +238,10 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
                 setInput('');
                 setCurrentWordStatus(WordStatus.Neutral);
             }
-
+            // This will calculate the live WPM.
             setLiveWpm(calculateLiveWpm());
         }
+        // This will calculate the live WPM.
     }, [words, currentWordIndex, isTestActive, startTime, input, currentWordStatus, calculateLiveWpm]);
     // dit is de functie die de test eindigt
     const endTest = useCallback(async (lastWordCorrect: boolean) => {
@@ -250,7 +252,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
         const timeInSeconds = (endTime - startTime) / 1000;
         const timeInMinutes = timeInSeconds / 60;
         
-        // Calculate total words completed
+        // Calculate total words completed, += means that it will add 1 to the total words.
         let totalWords = currentWordIndex;
         if (lastWordCorrect) {
             totalWords += 1;
@@ -279,17 +281,19 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
             console.log('Attempting to save test results with data:', testData);
             const response = await api.post('/typing/save', testData);
             console.log('Test results saved successfully:', response.data);
-            
+            // this will save the test results to the database
             const savedResult = { ...response.data, id: response.data.id || Date.now(), created_at: new Date().toISOString(), user_id: user.id };
             setTestResults(savedResult);
             setError(null);
-            
+            // this will use to onTestComplete function and turn it to true, so that it can later be used to show the test results.
             if (onTestComplete) {
                 onTestComplete(netWPM, accuracy);
             }
+            // This is just a error logging, it'll see if there is an error and then it'll show the error in the console.
         } catch (err: any) {
             console.error('Error saving test results:', err);
             setError(err.response?.data?.message || err.message || 'Failed to save test results. Please try again.');
+            // this will save the test results to the database
             setTestResults({ wpm: netWPM, accuracy: accuracy, id: Date.now(), user_id: user?.id || 0, created_at: new Date().toISOString() });
         }
     }, [startTime, isTestActive, correctlyCompletedChars, currentWordIndex, words, totalCharsEntered, correctChars, user, onTestComplete]);
@@ -297,12 +301,12 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
     const restartTest = useCallback(() => {
         fetchRandomWords();
     }, [fetchRandomWords]);
-
+// good or wrong word checker
     const getWordClass = useCallback((index: number): string => {
         if (index < currentWordIndex) {
             return 'completed'; 
         }
-        // goed of fout checker
+        // good or wrong word checker
         if (index === currentWordIndex) {
             let statusClass = 'current';
             if (currentWordStatus === WordStatus.Correct) {
@@ -314,11 +318,11 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
         }
         return '';
     }, [currentWordIndex, currentWordStatus]);
-    // dit berekent de verstreken tijd
+    // Calculates the elapsed time
     const elapsedTime = useMemo(() => {
         return startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
     }, [startTime]);
-
+// the refresh button
     return (
         <div className="typing-test">
             <div className="test-header">
@@ -336,7 +340,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
                     {error}
                 </div>
             )}
-            
+            {/* // this will show a loading message if the words are still loading */}
             {isLoading ? (
                 <div className="loading-message">Loading words...</div>
             ) : testResults ? (
@@ -368,18 +372,19 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
                         )}
                     </div>
                     <input
-                        // dit is de input veld
+                        // This is the input field for the user to start and do the WPM test.
                         ref={inputRef}
                         type="text"
                         value={input}
                         onChange={handleInputChange}
                         className="typing-input"
+                        // auto focus means that when the page loads, the input field will be auto selected.
                         autoFocus
                         placeholder="Start typing..."
                         disabled={words.length === 0}
                     />
                     <div className="live-stats">
-                        {/* // dit laat de live wpm zien */}
+                        {/* // This shows the live WPM */}
                         <span>WPM: {liveWpm}</span>
                         <span>•</span>
                         {/* // dit laat de verstreken tijd zien */}

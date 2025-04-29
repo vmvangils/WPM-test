@@ -13,7 +13,7 @@ export const submitScore = async (req: Request, res: Response) => {
   }
 };
 
-// deze functie haalt de top scores op van de leaderboard
+// deze functie haalt de top scores op voor de leaderboard
 export const getTopScores = async (req: Request, res: Response) => {
   try {
     const scores = await getLeaderboard();

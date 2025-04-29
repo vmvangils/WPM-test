@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import TypingTest from './TypingTest';
 import './Home.css';
 
+// Home component for the application.
 const Home: React.FC = () => {
     const [wpm, setWpm] = useState<number | null>(null);
     const [accuracy, setAccuracy] = useState<number | null>(null);
@@ -13,7 +14,7 @@ const Home: React.FC = () => {
         setWpm(finalWpm);
         setAccuracy(finalAccuracy);
     };
-
+    // Home page for the application.
     return (
         <div className="home">
             <h1>Welcome to the Typing Test</h1>

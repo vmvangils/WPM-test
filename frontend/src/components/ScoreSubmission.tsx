@@ -23,16 +23,17 @@ const ScoreSubmission: React.FC<ScoreSubmissionProps> = ({ score, onScoreSubmit 
     } catch (error) {
     }
   };
-
+  // This will show the score submission form.
   return (
     <div className="score-submission">
       <h2>Verstuur je score: {score} WPM</h2>
       <form onSubmit={handleSubmit}>
         <input
+        // This will show the username input field.
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Voer je gebruikersnaam in"
+          placeholder="Enter your username"
           required
         />
         <button type="submit">Verstuur Score</button>

@@ -137,7 +137,7 @@ export const getUserStats = async (req: Request, res: Response) => {
         if (isNaN(userId)) {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
-
+// gets the user stats from the database
         const stats = await TypingTestModel.getUserStats(userId);
         res.json(stats);
     } catch (error) {
