@@ -44,7 +44,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
             const requestResponse = await fetch('https://api.postman.com/collections/41981356-1328428e-6f7b-42f1-aaea-c15048a60802/requests/41981356-b90f12d2-5cff-42b6-b132-a8d51909f6b5', {
                 method: 'GET',
                 headers: {
-                    'X-API-Key': 'PMAK-680f509ce2913a000104410a-2f7e7838e99b08cf9aa19e719201c55aed',
+                    'X-API-Key': process.env.REACT_APP_POSTMAN_API_KEY || '',
                     'Content-Type': 'application/json'
                 }
             });
