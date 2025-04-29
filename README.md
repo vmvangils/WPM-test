@@ -36,10 +36,10 @@ I learned how to create a custom API (Github link: https://github.com/vmvangils/
 ![TypeTest Interface](Images/TypeTest_Image.png)
 
 ### History View #1
-![History View 1](Images/History_#1.png)
+![History View 1](Images/History_1.png)
 
 ### History View #2
-![History View 2](Images/History_#2.png)
+![History View 2](Images/History_2.png)
 </details>
 
 ## Prerequisites:
@@ -59,13 +59,14 @@ Before running the project, make sure you have the following installed:
 
 **API Setup:**
   - Open Postman and import the API collection
+  - Download the code from https://github.com/vmvangils/Random_Word_Generator
   - Set up your API key as an environment variable in Postman
   - Start the API container using Docker
 
-3. **Project Setup:**
-   - Clone the repository
-   - Navigate to the project directory
-   - Run the installation commands for both backend and frontend
+**Project Setup:**
+  - Clone the repository
+  - Navigate to the project directory
+  - Run the installation commands for both backend and frontend
 
 ## How to run the project?
 
