@@ -1,0 +1,11 @@
+.history-container {
+    width: 900px !important;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .history-container {
+        padding: 10px;
+    }
+} 
