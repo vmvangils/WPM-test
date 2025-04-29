@@ -3,6 +3,15 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import './TypingTest.css';
 
+// Add type definition for process.env
+declare global {
+    namespace NodeJS {
+        interface ProcessEnv {
+            REACT_APP_POSTMAN_API_KEY: string;
+        }
+    }
+}
+
 interface TypingTestProps {
     onTestComplete?: (wpm: number, accuracy: number) => void;
 }
@@ -20,20 +29,20 @@ enum WordStatus { Neutral, Correct, Incorrect }
 const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
     const { user } = useAuth();
     const [words, setWords] = useState<string[]>([]);
-    const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
     const [currentWordStatus, setCurrentWordStatus] = useState<WordStatus>(WordStatus.Neutral);
-    const [input, setInput] = useState('');
+    const [input, setInput] = useState<string>('');
     const [startTime, setStartTime] = useState<number | null>(null);
-    const [isTestActive, setIsTestActive] = useState(false);
+    const [isTestActive, setIsTestActive] = useState<boolean>(false);
     const [testResults, setTestResults] = useState<TypingTestResult | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [correctChars, setCorrectChars] = useState(0);
-    const [totalCharsEntered, setTotalCharsEntered] = useState(0);  
-    const [correctlyCompletedChars, setCorrectlyCompletedChars] = useState(0); 
-    const [liveWpm, setLiveWpm] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+    const [correctChars, setCorrectChars] = useState<number>(0);
+    const [totalCharsEntered, setTotalCharsEntered] = useState<number>(0);  
+    const [correctlyCompletedChars, setCorrectlyCompletedChars] = useState<number>(0); 
+    const [liveWpm, setLiveWpm] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const inputRef = useRef<HTMLInputElement>(null);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // dit maakt een connectie naar de postman api en haalt de woorden op
     const fetchRandomWords = useCallback(async () => {
@@ -175,19 +184,19 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
             // Update total characters entered
             if (newInput.length < previousInput.length) {
                 // When backspacing, remove the last character from total and correct counts
-                setTotalCharsEntered(prev => Math.max(0, prev - 1));
+                setTotalCharsEntered((prev: number) => Math.max(0, prev - 1));
                 // Only remove from correct count if the removed character was correct
                 if (previousInput[previousInput.length - 1] === currentWord[previousInput.length - 1]) {
-                    setCorrectChars(prev => Math.max(0, prev - 1));
+                    setCorrectChars((prev: number) => Math.max(0, prev - 1));
                 }
             } else {
                 const newChars = newInput.slice(previousInput.length);
-                setTotalCharsEntered(prev => prev + newChars.length);
+                setTotalCharsEntered((prev: number) => prev + newChars.length);
                 
                 // Count correct characters in the new input
                 const relevantPartOfWord = currentWord.slice(previousInput.length, newInput.length);
-                const correctNewChars = newChars.split('').filter((char, index) => char === relevantPartOfWord[index]).length;
-                setCorrectChars(prev => prev + correctNewChars);
+                const correctNewChars = newChars.split('').filter((char: string, index: number) => char === relevantPartOfWord[index]).length;
+                setCorrectChars((prev: number) => prev + correctNewChars);
             }
         }
 
@@ -217,14 +226,14 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
 
             // Only count the word as correct if it matches exactly
             if (typedWord === currentWord) {
-                setCorrectlyCompletedChars(prev => prev + currentWord.length);
+                setCorrectlyCompletedChars((prev: number) => prev + currentWord.length);
                 setCurrentWordStatus(WordStatus.Correct);
             }
             
             if (currentWordIndex === words.length - 1) {
                 endTest(typedWord === currentWord);
             } else {
-                setCurrentWordIndex(prev => prev + 1);
+                setCurrentWordIndex((prev: number) => prev + 1);
                 setInput('');
                 setCurrentWordStatus(WordStatus.Neutral);
             }
@@ -349,7 +358,7 @@ const TypingTest: React.FC<TypingTestProps> = ({ onTestComplete }) => {
                     <div className="words-container">
                         {/* // dit laat de woorden zien */}
                         {words.length > 0 ? (
-                            words.map((word, index) => (
+                            words.map((word: string, index: number) => (
                                 <span key={index} className={`word ${getWordClass(index)}`}>
                                     {word}
                                 </span>

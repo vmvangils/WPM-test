@@ -1,0 +1,14 @@
+declare module 'babel__generator';
+declare module 'babel__template';
+declare module 'babel__traverse';
+declare module 'eslint';
+declare module 'estree';
+declare module 'istanbul-lib-report';
+declare module 'prop-types';
+declare module 'yargs-parser';
+declare module 'body-parser';
+declare module 'http-errors';
+declare module 'qs';
+declare module 'range-parser';
+declare module 'react-router';
+declare module 'send'; 
