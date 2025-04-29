@@ -1,0 +1,18 @@
+.home {
+    padding: 2rem; 
+    text-align: center; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.home h1 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #f5f5f5; 
+}
+
+@media (max-width: 768px) {
+    .home {
+        padding: 1rem;
+    }
+} 
